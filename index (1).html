@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ritmo de línea – Maquila Torrestibas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDEEEC; --surface:#FFFFFF; --ink:#1F1F1F; --muted:#5E625F; --line:#D3D5D1;
+  --naranja:#EE7623; --naranja-ink:#B9540F; --negro:#1E1E1E;
+  --ok:#2E7D4F; --bad:#C2361C; --warn:#C98A00; --chip:#F3F4F2;
+  --andon:#1E1E1E; --andon-ink:#F5F5F3;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#171818; --surface:#222423; --ink:#ECEDEA; --muted:#A3A7A3; --line:#3A3D3B;
+    --naranja-ink:#FF9A55; --ok:#5CC28A; --bad:#FF7A5C; --warn:#F2B93B; --chip:#2C2F2D;
+    --andon:#0E0F0F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#171818; --surface:#222423; --ink:#ECEDEA; --muted:#A3A7A3; --line:#3A3D3B;
+  --naranja-ink:#FF9A55; --ok:#5CC28A; --bad:#FF7A5C; --warn:#F2B93B; --chip:#2C2F2D;
+  --andon:#0E0F0F; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.45}
+h1,h2,.cond{font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif}
+h2{font-size:1.35rem;font-weight:600;margin:0 0 .6rem}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:.45rem .8rem;font-weight:500}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--naranja);border-color:var(--naranja);color:#1E1E1E;font-weight:600}
+button.dark{background:var(--negro);border-color:var(--negro);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--naranja);outline-offset:2px}
+input[type=number],input[type=text],input[type=time],select{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:.35rem .45rem;min-width:0}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px 40px}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 14px;border-bottom:4px solid var(--naranja);margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:14px;height:44px;background:var(--naranja);box-shadow:8px 0 0 var(--ink)}
+.top h1{margin:0 0 0 8px;font-size:2rem;line-height:1;font-weight:700}
+.top p{margin:2px 0 0 8px;color:var(--muted);font-size:.95rem}
+
+/* Andon */
+.andon{background:var(--andon);color:var(--andon-ink);border-radius:10px;padding:22px 24px 18px;border-left:10px solid var(--naranja);margin-bottom:16px}
+.eta-label{font-size:1.05rem;color:#C9CBC7}
+.eta{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:clamp(56px,10vw,112px);line-height:.95;color:var(--naranja);font-variant-numeric:tabular-nums}
+.eta-sub{font-size:1.1rem;margin-top:6px;min-height:1.5em}
+.eta-sub .ok{color:#7EDBA4}.eta-sub .bad{color:#FF8E73}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#3A3B3A;margin-top:18px;border-radius:6px;overflow:hidden}
+.kpi{background:var(--andon);padding:10px 12px}
+.k-v{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:2rem;font-weight:600;line-height:1.05;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.k-l{color:#B9BBB7;font-size:.88rem}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+@media (max-width:960px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+.grid .panel{margin-bottom:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.muted{color:var(--muted);font-size:.92rem}
+.stage{position:relative;background:#000;border-radius:8px;overflow:hidden;min-height:220px;display:flex;align-items:center;justify-content:center}
+.stage video{display:block;width:100%;height:auto;max-height:70vh}
+.stage canvas{position:absolute;left:0;top:0;touch-action:none}
+.stage.drawing canvas{cursor:crosshair}
+.placeholder{color:#C9CBC7;text-align:center;padding:24px;max-width:46ch}
+.hidden{display:none!important}
+.meas-on{background:var(--bad)!important;border-color:var(--bad)!important;color:#fff!important}
+.clock{font-family:"Barlow Condensed",sans-serif;font-size:1.4rem;font-variant-numeric:tabular-nums;margin-left:auto}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-bottom:18px}
+.form label{display:flex;flex-direction:column;gap:3px;font-size:.9rem;color:var(--muted)}
+.form label input{color:var(--ink);font-size:1rem}
+.form .check{flex-direction:row;align-items:center;gap:6px}
+
+.sug{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.sug li{border-left:4px solid var(--line);padding:6px 0 6px 12px}
+.sug li.warn{border-color:var(--naranja)}
+.sug li.bad{border-color:var(--bad)}
+.sug li.ok{border-color:var(--ok)}
+.sug li button{margin-top:6px}
+
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:1060px;font-size:.95rem}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:.85rem;padding:6px 6px;border-bottom:2px solid var(--line);white-space:nowrap}
+th.grp{color:var(--ink);font-family:"Barlow Condensed",sans-serif;font-size:1rem;border-bottom:1px solid var(--line)}
+td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+td input[type=number]{width:72px;text-align:right}
+td input[type=text]{width:100%;min-width:170px}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dot{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle}
+.bar{height:10px;background:var(--chip);border-radius:5px;overflow:hidden;min-width:90px}
+.bar span{display:block;height:100%;background:var(--ok)}
+.bar span.hot{background:var(--bad)}
+.tag{display:inline-block;font-size:.78rem;background:var(--naranja);color:#1E1E1E;padding:1px 6px;border-radius:4px;font-weight:600;margin-left:4px}
+td.meas{background:color-mix(in srgb,var(--chip) 70%,transparent)}
+.small{padding:.25rem .5rem;font-size:.88rem}
+.yama svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.88rem;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:10px;vertical-align:middle;margin-right:5px;border-radius:2px}
+footer{color:var(--muted);font-size:.88rem;max-width:80ch}
+.steplist{margin:0;padding-left:1.4rem;display:flex;flex-direction:column;gap:8px}
+.steplist li{padding-left:4px}
+.steplist li.done{color:var(--muted);text-decoration:line-through}
+.steplist li.done::marker{color:var(--ok)}
+.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:10px 0}
+.quick button{padding:.8rem .6rem;text-align:left;font-weight:600;border-left-width:6px;min-height:58px;line-height:1.2}
+.quick button small{display:block;font-weight:400;color:var(--muted);margin-top:2px}
+.quick button:active{background:var(--chip)}
+@media (max-width:720px){
+  .wrap{padding:0 10px 32px}
+  .top h1{font-size:1.6rem}
+  .andon{padding:16px 16px 14px}
+  .panel{padding:12px}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 8px;border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:10px}
+  tbody td{border:0;padding:0;display:flex;flex-direction:column;gap:3px;min-width:0}
+  tbody td[data-l]::before{content:attr(data-l);font-size:.78rem;color:var(--muted)}
+  tbody td.full{grid-column:1/-1}
+  tbody td.hide-m{display:none}
+  td input[type=number],td input[type=text]{width:100%;min-width:0}
+  td.meas{background:transparent}
+  .num{text-align:left}
+  .clock{margin-left:0}
+}
+.rep-wrap{position:fixed;inset:0;background:var(--bg);overflow:auto;z-index:50;padding:calc(env(safe-area-inset-top,0px) + 6px) 10px calc(env(safe-area-inset-bottom,0px) + 24px)}
+.rep-bar{position:sticky;top:0;display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;background:var(--bg);z-index:2;max-width:820px;margin:0 auto}
+.report{background:#fff;color:#1E1E1E;max-width:820px;margin:0 auto;padding:28px;border-radius:8px;font-size:14px;line-height:1.45}
+.report table{min-width:0}
+.report thead{display:table-header-group}
+.report tbody tr{display:table-row;border:0;padding:0;margin:0;border-radius:0}
+.report tbody td{display:table-cell;padding:4px 6px;border:1px solid #D3D5D1}
+.report tbody td::before{content:none}
+.report h1{font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif;font-size:26px;margin:2px 0 0;line-height:1.1}
+.report h2{font-size:17px;margin:22px 0 8px;border-bottom:2px solid #EE7623;padding-bottom:3px}
+.r-head{display:flex;gap:12px;align-items:center;border-bottom:4px solid #1E1E1E;padding-bottom:10px}
+.r-mark{flex:none;width:12px;height:44px;background:#EE7623;box-shadow:7px 0 0 #1E1E1E;margin-right:8px}
+.r-org{font-size:12px;color:#5E625F}
+.r-meta{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+.report .r-meta td:nth-child(odd){background:#F3F4F2;color:#5E625F;width:20%}
+.r-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.r-kpis div{border:1px solid #D3D5D1;border-left:4px solid #EE7623;padding:6px 8px;min-width:0}
+.r-kpis span{display:block;font-size:11px;color:#5E625F}
+.r-kpis b{font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif;font-size:20px;font-weight:600;overflow-wrap:anywhere}
+.r-eta{margin:10px 0 0}
+.r-tabwrap{overflow-x:auto}
+.report .r-tab{border-collapse:collapse;width:100%;font-size:12px;min-width:620px}
+.report .r-tab th{background:#1E1E1E;color:#fff;padding:5px;text-align:left;font-weight:500;border:0;white-space:normal;font-size:11px}
+.report .r-tab td.n{text-align:right;font-variant-numeric:tabular-nums}
+.report .r-tab tr.hot td{background:#FDE7DA}
+.r-chart svg{width:100%;height:auto}
+.r-sug{padding-left:20px;margin:0}.r-sug li{margin-bottom:6px}
+.r-obs{min-height:80px;border:1px dashed #A3A7A3;padding:8px;border-radius:4px;outline-color:#EE7623}
+.r-obs:empty::before{content:attr(data-ph);color:#8A8D8A}
+.r-note{font-size:11px;color:#5E625F;margin-top:16px}
+.r-sign{display:flex;justify-content:space-around;gap:16px;margin-top:40px;text-align:center;font-size:13px}
+@media (max-width:600px){.report{padding:16px}.r-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{
+  :root{padding:0}
+  body{background:#fff}
+  body>*:not(#repWrap){display:none!important}
+  #repWrap{position:static;padding:0;background:#fff;overflow:visible}
+  .rep-bar{display:none!important}
+  .report{max-width:none;padding:0;border-radius:0}
+  .report .r-tab{min-width:0}
+  .r-obs{border-color:#ccc}
+  .r-obs:empty{display:none}
+  @page{margin:14mm}
+}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--negro);color:#fff;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="mark" aria-hidden="true"></span>
+      <div><h1>Ritmo de línea</h1><p>Maquila Torrestibas, medición del flujo en vivo</p></div>
+    </div>
+    <div class="row" style="margin:0">
+      <button id="btnReport" class="primary">Generar informe</button>
+      <button id="btnExample" title="Borra todos los datos y empieza una línea nueva">Nueva línea</button>
+    </div>
+  </header>
+
+  <section class="panel">
+    <h2>Cómo empezar</h2>
+    <ol class="steplist">
+      <li id="st1">En <b>Pedido y turno</b>, escribe las unidades del pedido y la hora de fin del turno.</li>
+      <li id="st2">En <b>Estaciones del proceso</b>, toca <b>Agregar estación</b> por cada paso, en orden, y pon cuántas personas tiene.</li>
+      <li id="st3">Pon el <b>ciclo</b> de cada estación: los segundos que tarda una persona en hacer su tarea una vez, y cuántas unidades salen de ese ciclo.</li>
+      <li id="st4">Opcional: abre la cámara, dibuja una zona por estación, toca <b>Iniciar medición</b> y cuenta los ciclos reales.</li>
+    </ol>
+  </section>
+
+  <section class="andon" aria-live="polite">
+    <div class="eta-label" id="etaLabel">Terminas el pedido a las</div>
+    <div class="eta" id="eta">--:--</div>
+    <div class="eta-sub" id="etaSub"></div>
+    <div class="kpis">
+      <div class="kpi"><span class="k-v" id="kRate">—</span><span class="k-l" id="kRateL">u/h estimadas</span></div>
+      <div class="kpi"><span class="k-v" id="kReq">—</span><span class="k-l">u/h necesarias para llegar</span></div>
+      <div class="kpi"><span class="k-v" id="kAv">—</span><span class="k-l" id="kAvL">avance</span></div>
+      <div class="kpi"><span class="k-v" id="kBot">—</span><span class="k-l" id="kBotL">cuello de botella</span></div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="panel">
+      <h2>Video cenital</h2>
+      <div class="row">
+        <button id="btnCam" class="dark">Usar cámara</button>
+        <button id="btnRec">Grabar con el celular</button>
+        <input type="file" id="fileRec" accept="video/*" capture="environment" class="hidden">
+        <button id="btnFile">Cargar video</button>
+        <input type="file" id="file" accept="video/*" class="hidden">
+        <button id="btnPlay" class="hidden">Pausar</button>
+        <select id="speed" class="hidden" aria-label="Velocidad de reproducción">
+          <option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option>
+        </select>
+        <span class="clock" id="clock" title="Tiempo medido">00:00</span>
+      </div>
+      <div class="stage" id="stage">
+        <div class="placeholder" id="ph">Abre la cámara o carga un video grabado desde arriba. Todo se procesa en este equipo: el video no se guarda ni se envía.</div>
+        <video id="video" playsinline muted class="hidden"></video>
+        <canvas id="ov"></canvas>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="btnMeasure" class="primary">Iniciar medición</button>
+        <button id="btnReset">Reiniciar medición</button>
+        <label class="muted" style="display:flex;align-items:center;gap:6px">Sensibilidad
+          <input type="range" id="sens" min="1" max="10" value="5"></label>
+      </div>
+      <div class="row">
+        <select id="zoneSel" aria-label="Estación para dibujar zona"></select>
+        <button id="btnDraw">Dibujar zona</button>
+        <button id="btnClearZone">Borrar zona</button>
+      </div>
+      <div class="row">
+        <strong class="cond" style="font-size:1.1rem">Salida</strong>
+        <label class="muted">uds por conteo <input type="number" id="salUds" min="1" step="1" style="width:70px"></label>
+        <label class="muted"><input type="checkbox" id="salAuto"> conteo automático</label>
+        <button id="salPlus" class="small">+1 salida</button>
+        <span class="muted" id="salInfo"></span>
+      </div>
+      <div class="quick" id="quick" aria-label="Contador rápido por estación"></div>
+      <p class="muted" style="margin:4px 0 0">Toca los botones de arriba para contar ciclos desde el celular. En computadora, las teclas <b>1</b> a <b>9</b> suman un ciclo a cada estación y la barra espaciadora suma una salida. Para comparar personas, crea una estación por puesto y dibuja una zona sobre cada una.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Pedido y turno</h2>
+      <div class="form">
+        <label>Línea o maquila<input type="text" id="linea" placeholder="Ej. Armado de mix"></label>
+        <label>Responsable<input type="text" id="resp" placeholder="Tu nombre"></label>
+        <label>Unidades del pedido<input type="number" inputmode="numeric" id="pedido" min="0" step="1"></label>
+        <label>Ya hechas antes de medir<input type="number" id="hechas" min="0" step="1"></label>
+        <label>Fin del turno<input type="time" id="fin"></label>
+        <label>Rendimiento esperado (%)<input type="number" id="rend" min="10" max="100" step="1"></label>
+        <label class="check"><input type="checkbox" id="usarAhora"> Calcular desde ahora</label>
+        <label id="refWrap">Empiezo a las<input type="time" id="ref"></label>
+      </div>
+      <h2>Sugerencias</h2>
+      <ul class="sug" id="sug"></ul>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="row" style="justify-content:space-between">
+      <h2 style="margin:0">Estaciones del proceso</h2>
+      <div class="row" style="margin:0">
+        <button id="btnUseAll">Usar todos los tiempos medidos</button>
+        <button id="btnAdd" class="dark">Agregar estación</button>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:0">Mide todo en la misma unidad final (ej. pack 2x1). Si una estación trabaja por cartón de 12 packs, pon 12 en uds por ciclo.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th colspan="7" class="grp">Datos que ingresas</th><th colspan="2" class="grp">Cálculo</th><th colspan="5" class="grp">Medido en video</th><th></th></tr>
+          <tr><th></th><th>#</th><th>Estación</th><th>Personas</th><th>Ciclo (s/persona)</th><th>Uds por ciclo</th><th></th>
+              <th>Capacidad (u/h)</th><th>Utilización</th>
+              <th>Ciclos</th><th>Actividad</th><th>Ciclo medido</th><th>Auto</th><th></th><th></th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel yama">
+    <h2>Carga por estación frente al ritmo pedido</h2>
+    <p class="muted" style="margin-top:0">Cada barra es el tiempo que tarda la estación en entregar una unidad. Si pasa la línea naranja, esa estación no alcanza el ritmo que necesitas.</p>
+    <div id="yama"></div>
+    <div class="legend"><span><i style="background:var(--ok)"></i>Alcanza</span><span><i style="background:var(--bad)"></i>No alcanza</span><span><i style="border:2px dashed var(--ink);background:transparent"></i>Con la reasignación sugerida</span><span><i style="background:var(--naranja)"></i>Takt (ritmo pedido)</span></div>
+  </section>
+
+  <footer>Los cálculos son referenciales: el conteo automático depende de la iluminación, el ángulo y la sensibilidad, así que compáralo con conteos manuales antes de usarlo para decisiones. Grabar al personal es tratamiento de datos personales: informa la finalidad y coordina con Talento Humano.</footer>
+</div>
+<div id="repWrap" class="rep-wrap hidden" role="dialog" aria-modal="true" aria-label="Informe de ritmo de línea">
+  <div class="rep-bar">
+    <button id="repPrint" class="primary">Guardar PDF</button>
+    <button id="repShare">Compartir resumen</button>
+    <button id="repClose">Cerrar</button>
+  </div>
+  <div id="report" class="report"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const COLORS=['#EE7623','#2A9D8F','#7B61FF','#E9C46A','#E05A47','#3A86FF','#8AB17D','#C77DFF','#577590'];
+const KEY='ritmo-linea-maquila-v2';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function defaults(){return{
+  linea:'',resp:'',pedido:0,hechas:0,fin:'',usarAhora:true,ref:'',rend:100,
+  salidaUds:1,salidaAuto:false,salidaZone:null,sens:5,
+  stations:[]}}
+function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let S=load()||defaults();
+if(!Array.isArray(S.stations))S=defaults();
+
+/* ---------- utilidades ---------- */
+const fmt=(n,d=0)=>Number.isFinite(n)?n.toLocaleString('es-EC',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+function dur(h){if(!Number.isFinite(h))return '—';const m=Math.round(Math.abs(h)*60);const hh=Math.floor(m/60),mm=m%60;return hh?`${hh} h ${String(mm).padStart(2,'0')} min`:`${mm} min`}
+function hhmm(d){return d.toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit',hour12:false})}
+function timeToday(str){const [h,m]=(str||'00:00').split(':').map(Number);const d=new Date();d.setHours(h||0,m||0,0,0);return d}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),Math.max(2200,msg.length*60))}
+const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:0};
+
+/* ---------- modelo de línea ---------- */
+const cap=(s,p)=>s.ciclo>0&&s.uds>0?p*3600*s.uds/s.ciclo:0;
+function lineModel(alloc){
+  const sts=S.stations;const a=alloc||sts.map(s=>s.personas);
+  const caps=sts.map((s,i)=>cap(s,a[i]));
+  let b=-1,th=Infinity;caps.forEach((c,i)=>{if(c<th){th=c;b=i}});
+  if(!sts.length)th=0;
+  return{caps,th,b,alloc:a};
+}
+function optimize(){
+  const sts=S.stations,n=sts.length;const P=sts.reduce((a,s)=>a+s.personas,0);
+  if(!n||P<n||sts.some(s=>!(s.ciclo>0&&s.uds>0)))return null;
+  const a=sts.map(()=>1);let rem=P-n;
+  while(rem-->0){let k=0,mv=Infinity;sts.forEach((s,i)=>{const c=cap(s,a[i]);if(c<mv){mv=c;k=i}});a[k]++}
+  const V=Math.min(...sts.map((s,i)=>cap(s,a[i])));
+  const need=sts.map(s=>Math.max(1,Math.ceil(V*s.ciclo/(3600*s.uds)-1e-9)));
+  let left=P-need.reduce((x,y)=>x+y,0);
+  for(let i=0;i<n&&left>0;i++){const add=Math.min(left,Math.max(0,sts[i].personas-need[i]));need[i]+=add;left-=add}
+  while(left-->0){let k=0,mv=Infinity;sts.forEach((s,i)=>{const c=cap(s,need[i]);if(c<mv){mv=c;k=i}});need[k]++}
+  return need;
+}
+function personasPara(rateNeeded){
+  const f=S.rend/100||1;const t=rateNeeded/f;
+  return S.stations.reduce((a,s)=>a+Math.max(1,Math.ceil(t*s.ciclo/(3600*s.uds)-1e-9)),0);
+}
+
+/* ---------- medición ---------- */
+let measuring=false,mClock=0;
+const ME={}; // por clave de zona
+const MOT={};
+function getM(k){return ME[k]||(ME[k]={count:0,active:0,total:0,up:false,upT:0,lastT:null,ints:[],times:[]})}
+function resetMeas(){for(const k in ME)delete ME[k];mClock=0;updateClock()}
+function addCount(k,t){
+  if(!measuring){toast('Inicia la medición para contar');return}
+  const m=getM(k);m.count++;
+  if(m.lastT!=null)m.ints.push(t-m.lastT);
+  if(m.ints.length>60)m.ints.shift();
+  m.lastT=t;m.times.push(t);if(m.times.length>2000)m.times.shift();
+}
+function outUnits(){return (ME.salida?ME.salida.count:0)*S.salidaUds}
+function realRate(){
+  const m=ME.salida;if(!m||m.count<2||mClock<60)return null;
+  const win=900,from=mClock-win;const n=m.times.filter(t=>t>=from).length;
+  return n*S.salidaUds/Math.min(win,mClock)*3600;
+}
+function measuredCycle(s){
+  const m=ME[s.id];if(!m||m.count<3||m.active<5)return null;
+  return s.personas*m.active/m.count;
+}
+function cv(a){if(a.length<6)return 0;const mu=a.reduce((x,y)=>x+y,0)/a.length;const v=a.reduce((x,y)=>x+(y-mu)**2,0)/a.length;return mu>0?Math.sqrt(v)/mu:0}
+
+/* ---------- video ---------- */
+const video=$('#video'),ov=$('#ov'),octx=ov.getContext('2d'),stage=$('#stage');
+const off=document.createElement('canvas');const offx=off.getContext('2d',{willReadFrequently:true});
+let src=null,prev=null,lastVT=null,lastProc=0,drawingFor=null,dragStart=null,dragRect=null,stream=null;
+const W=160;
+
+$('#btnCam').onclick=async()=>{
+  try{
+    stopSource();
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('nomedia');
+    try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280}},audio:false})}
+    catch(e1){if(e1.name==='NotAllowedError')throw e1;stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false})}
+    video.srcObject=stream;video.removeAttribute('src');src='cam';await video.play();showVideo();
+  }catch(e){const emb=window.self!==window.top;toast(emb?'Esta vista no permite la cámara. Abre la app desde tu enlace de GitHub Pages o usa Grabar con el celular.':e.name==='NotAllowedError'?'Permiso de cámara denegado. Actívalo en la configuración del navegador para este sitio y vuelve a tocar Usar cámara.':'No se pudo abrir la cámara. Usa Grabar con el celular.')}
+};
+$('#btnFile').onclick=()=>$('#file').click();
+$('#btnRec').onclick=()=>$('#fileRec').click();
+$('#fileRec').onchange=e=>$('#file').onchange(e);
+$('#file').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;stopSource();
+  video.srcObject=null;video.src=URL.createObjectURL(f);video.loop=false;src='file';
+  video.playbackRate=num($('#speed').value)||1;
+  video.onloadeddata=()=>{showVideo();video.play().catch(()=>{})};
+};
+$('#btnPlay').onclick=()=>{if(video.paused)video.play();else video.pause()};
+video.addEventListener('play',()=>$('#btnPlay').textContent='Pausar');
+video.addEventListener('pause',()=>$('#btnPlay').textContent='Reproducir');
+video.addEventListener('ended',()=>{$('#btnPlay').textContent='Reproducir';if(measuring)toast('El video terminó. La medición queda en pausa.')});
+$('#speed').onchange=e=>{video.playbackRate=num(e.target.value)||1};
+function stopSource(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}prev=null;lastVT=null}
+function showVideo(){
+  $('#ph').classList.add('hidden');video.classList.remove('hidden');
+  const isFile=src==='file';$('#btnPlay').classList.toggle('hidden',!isFile);$('#speed').classList.toggle('hidden',!isFile);
+  requestAnimationFrame(sizeOverlay);
+}
+function sizeOverlay(){
+  const r=video.getBoundingClientRect();const dpr=window.devicePixelRatio||1;
+  ov.width=Math.max(1,r.width*dpr);ov.height=Math.max(1,r.height*dpr);ov.style.width=r.width+'px';ov.style.height=r.height+'px';
+  const sr=stage.getBoundingClientRect();ov.style.left=(r.left-sr.left)+'px';ov.style.top=(r.top-sr.top)+'px';
+  drawOverlay();
+}
+window.addEventListener('resize',()=>{if(src)sizeOverlay()});
+
+function zones(){
+  const z=S.stations.map((s,i)=>({key:s.id,zone:s.zone,color:COLORS[i%COLORS.length],label:`${i+1} ${s.name}`,auto:s.auto}));
+  z.push({key:'salida',zone:S.salidaZone,color:'#FFFFFF',label:'Salida',auto:S.salidaAuto});
+  return z;
+}
+function thresholds(){const s=S.sens||5;return{pix:45-s*3,act:0.05-s*0.004}}
+
+function analyze(){
+  const vw=video.videoWidth,vh=video.videoHeight;if(!vw||!vh)return;
+  const w=W,h=Math.max(1,Math.round(W*vh/vw));
+  if(off.width!==w||off.height!==h){off.width=w;off.height=h;prev=null}
+  offx.drawImage(video,0,0,w,h);
+  let d;try{d=offx.getImageData(0,0,w,h).data}catch(e){return}
+  const g=new Uint8Array(w*h);
+  for(let i=0,j=0;i<g.length;i++,j+=4)g[i]=(d[j]*77+d[j+1]*150+d[j+2]*29)>>8;
+  const {pix}=thresholds();
+  if(prev){
+    for(const z of zones()){
+      if(!z.zone){MOT[z.key]=null;continue}
+      const x0=Math.max(0,Math.floor(z.zone.x*w)),y0=Math.max(0,Math.floor(z.zone.y*h));
+      const x1=Math.min(w,Math.ceil((z.zone.x+z.zone.w)*w)),y1=Math.min(h,Math.ceil((z.zone.y+z.zone.h)*h));
+      let c=0,a=0;
+      for(let y=y0;y<y1;y++){let idx=y*w+x0;for(let x=x0;x<x1;x++,idx++){a++;if(Math.abs(g[idx]-prev[idx])>pix)c++}}
+      MOT[z.key]=a?c/a:0;
+    }
+  }
+  prev=g;
+}
+
+function tick(dt){
+  if(!measuring||dt<=0)return;
+  mClock+=dt;const {act}=thresholds();
+  for(const z of zones()){
+    const m=getM(z.key);
+    if(z.key==='salida'&&!z.zone){continue}
+    m.total+=dt;
+    const mv=MOT[z.key];
+    if(!z.zone||mv==null){m.active+=dt;continue}
+    if(mv>act)m.active+=dt;
+    if(z.auto){
+      if(!m.up&&mv>act*2.5){m.up=true;m.upT=mClock}
+      else if(m.up&&mv<act){m.up=false;if(mClock-m.upT>0.25&&(m.lastT==null||mClock-m.lastT>0.8))addCount(z.key,mClock)}
+    }
+  }
+}
+
+function loop(){
+  requestAnimationFrame(loop);
+  const now=performance.now()/1000;
+  if(now-lastProc<0.1)return;
+  if(!src||video.readyState<2){
+    if(measuring&&!src){const dt=lastVT==null?0:now-lastVT;lastVT=now;tick(Math.min(dt,1));}
+    lastProc=now;return;
+  }
+  let t=src==='file'?video.currentTime:now;
+  let dt=lastVT==null?0:t-lastVT;lastVT=t;
+  if(dt<0||dt>2||(src==='file'&&(video.paused||video.ended)))dt=0;
+  lastProc=now;
+  analyze();tick(dt);drawOverlay();
+}
+requestAnimationFrame(loop);
+
+function drawOverlay(){
+  const dpr=window.devicePixelRatio||1;const W2=ov.width,H2=ov.height;
+  octx.clearRect(0,0,W2,H2);if(!src)return;
+  const {act}=thresholds();
+  octx.font=`${600} ${13*dpr}px "Barlow Condensed", Arial, sans-serif`;
+  for(const z of zones()){
+    if(!z.zone)continue;
+    const x=z.zone.x*W2,y=z.zone.y*H2,w=z.zone.w*W2,h=z.zone.h*H2;
+    const mv=MOT[z.key]||0;const on=mv>act;
+    octx.lineWidth=(on?3:1.5)*dpr;octx.strokeStyle=z.color;
+    octx.fillStyle=on?z.color+'33':'transparent';
+    octx.fillRect(x,y,w,h);octx.strokeRect(x,y,w,h);
+    const m=ME[z.key];const lab=`${z.label}${m?'  '+m.count:''}`;
+    const tw=octx.measureText(lab).width+10*dpr;
+    octx.fillStyle='rgba(0,0,0,.72)';octx.fillRect(x,y,tw,18*dpr);
+    octx.fillStyle=z.color;octx.fillText(lab,x+5*dpr,y+13*dpr);
+    octx.fillStyle=z.color;octx.fillRect(x,y+h-5*dpr,Math.min(1,mv/(act*4))*w,5*dpr);
+  }
+  if(dragRect){octx.setLineDash([6*dpr,4*dpr]);octx.strokeStyle='#EE7623';octx.lineWidth=2*dpr;
+    octx.strokeRect(dragRect.x*W2,dragRect.y*H2,dragRect.w*W2,dragRect.h*H2);octx.setLineDash([])}
+}
+
+function normPt(e){const r=ov.getBoundingClientRect();return{x:Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),y:Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))}}
+ov.addEventListener('pointerdown',e=>{if(!drawingFor)return;ov.setPointerCapture(e.pointerId);dragStart=normPt(e);dragRect={x:dragStart.x,y:dragStart.y,w:0,h:0}});
+ov.addEventListener('pointermove',e=>{if(!dragStart)return;const p=normPt(e);dragRect={x:Math.min(p.x,dragStart.x),y:Math.min(p.y,dragStart.y),w:Math.abs(p.x-dragStart.x),h:Math.abs(p.y-dragStart.y)};drawOverlay()});
+ov.addEventListener('pointerup',()=>{
+  if(!dragStart)return;
+  if(dragRect&&dragRect.w>0.02&&dragRect.h>0.02){
+    if(drawingFor==='salida')S.salidaZone=dragRect;else{const s=S.stations.find(x=>x.id===drawingFor);if(s)s.zone=dragRect}
+    save();toast('Zona guardada');
+  }
+  dragStart=null;dragRect=null;drawingFor=null;stage.classList.remove('drawing');$('#btnDraw').textContent='Dibujar zona';drawOverlay();renderTable();
+});
+$('#btnDraw').onclick=()=>{
+  if(!src){toast('Primero abre la cámara o carga un video');return}
+  if(drawingFor){drawingFor=null;stage.classList.remove('drawing');$('#btnDraw').textContent='Dibujar zona';return}
+  drawingFor=$('#zoneSel').value;stage.classList.add('drawing');$('#btnDraw').textContent='Cancelar';
+  toast('Arrastra sobre el video para marcar la zona');
+};
+$('#btnClearZone').onclick=()=>{const k=$('#zoneSel').value;if(k==='salida')S.salidaZone=null;else{const s=S.stations.find(x=>x.id===k);if(s)s.zone=null}save();drawOverlay();renderTable()};
+function renderZoneSel(){
+  const cur=$('#zoneSel').value;
+  $('#zoneSel').innerHTML=S.stations.map((s,i)=>`<option value="${s.id}">${i+1}. ${esc(s.name)}</option>`).join('')+'<option value="salida">Salida (producto terminado)</option>';
+  if([...$('#zoneSel').options].some(o=>o.value===cur))$('#zoneSel').value=cur;
+}
+
+/* ---------- controles de medición ---------- */
+$('#btnMeasure').onclick=()=>{
+  measuring=!measuring;lastVT=null;
+  $('#btnMeasure').textContent=measuring?'Detener medición':'Iniciar medición';
+  $('#btnMeasure').classList.toggle('meas-on',measuring);
+  if(measuring&&src==='file'&&video.paused)video.play().catch(()=>{});
+};
+$('#btnReset').onclick=()=>{resetMeas();renderTable();update(true);toast('Medición reiniciada')};
+$('#sens').oninput=e=>{S.sens=num(e.target.value);save()};
+$('#salUds').oninput=e=>{S.salidaUds=Math.max(1,num(e.target.value));save();update(true)};
+$('#salAuto').onchange=e=>{S.salidaAuto=e.target.checked;save()};
+$('#salPlus').onclick=()=>{addCount('salida',mClock);update(true)};
+function updateClock(){const s=Math.floor(mClock);$('#clock').textContent=`${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor(s/60)%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
+
+document.addEventListener('keydown',e=>{
+  const tag=(e.target.tagName||'').toLowerCase();if(['input','select','textarea'].includes(tag))return;
+  if(e.key===' '){e.preventDefault();addCount('salida',mClock);update(true);return}
+  const n=parseInt(e.key,10);
+  if(n>=1&&n<=9&&S.stations[n-1]){addCount(S.stations[n-1].id,mClock);update(true)}
+});
+
+/* ---------- formulario de pedido ---------- */
+function bindForm(){
+  $('#linea').value=S.linea||'';$('#resp').value=S.resp||'';
+  $('#pedido').value=S.pedido;$('#hechas').value=S.hechas;$('#fin').value=S.fin;$('#rend').value=S.rend;
+  $('#usarAhora').checked=S.usarAhora;$('#ref').value=S.ref;$('#refWrap').classList.toggle('hidden',S.usarAhora);
+  $('#salUds').value=S.salidaUds;$('#salAuto').checked=S.salidaAuto;$('#sens').value=S.sens||5;
+}
+[['pedido','pedido'],['hechas','hechas'],['rend','rend']].forEach(([id,k])=>$('#'+id).addEventListener('input',e=>{S[k]=Math.max(0,num(e.target.value));save();update(true)}));
+$('#linea').addEventListener('input',e=>{S.linea=e.target.value;save()});
+$('#resp').addEventListener('input',e=>{S.resp=e.target.value;save()});
+$('#fin').addEventListener('input',e=>{S.fin=e.target.value;save();update(true)});
+$('#ref').addEventListener('input',e=>{S.ref=e.target.value;save();update(true)});
+$('#usarAhora').addEventListener('change',e=>{S.usarAhora=e.target.checked;$('#refWrap').classList.toggle('hidden',S.usarAhora);save();update(true)});
+$('#btnExample').onclick=()=>{if(!confirm('¿Empezar una línea nueva? Se borran el pedido, las estaciones y las zonas.'))return;S=defaults();save();resetMeas();bindForm();renderTable();update(true)};
+
+/* ---------- tabla de estaciones ---------- */
+function renderTable(){
+  const tb=$('#tbody');
+  tb.innerHTML=S.stations.map((s,i)=>`
+  <tr data-id="${s.id}">
+    <td class="hide-m"><span class="dot" style="background:${COLORS[i%COLORS.length]}"></span></td>
+    <td class="num hide-m">${i+1}</td>
+    <td class="full" data-l="Estación ${i+1}"><input type="text" data-k="name" placeholder="Ej. Armar cartón" value="${esc(s.name)}" aria-label="Nombre de la estación ${i+1}"></td>
+    <td data-l="Personas"><input type="number" inputmode="numeric" data-k="personas" min="1" step="1" value="${s.personas}" aria-label="Personas"></td>
+    <td data-l="Ciclo s/persona"><input type="number" inputmode="decimal" data-k="ciclo" min="0.1" step="0.1" value="${s.ciclo||''}" placeholder="seg" aria-label="Ciclo en segundos por persona"></td>
+    <td data-l="Uds por ciclo"><input type="number" inputmode="numeric" data-k="uds" min="1" step="1" value="${s.uds}" aria-label="Unidades por ciclo"></td>
+    <td class="hide-m"><span class="muted">${s.zone?'zona ✓':''}</span></td>
+    <td class="num" data-l="Capacidad u/h" id="cap-${s.id}"></td>
+    <td data-l="Utilización"><div class="bar"><span id="ut-${s.id}"></span></div></td>
+    <td class="num meas" data-l="Ciclos medidos"><span id="mc-${s.id}">0</span> <button class="small" data-act="plus" title="Sumar un ciclo (tecla ${i+1})">+1</button></td>
+    <td class="num meas" data-l="Actividad" id="ma-${s.id}">—</td>
+    <td class="num meas" data-l="Ciclo medido"><span id="mm-${s.id}">—</span> <button class="small" data-act="use" title="Usar este ciclo en el cálculo">Usar</button></td>
+    <td class="meas" data-l="Conteo auto"><input type="checkbox" data-k="auto" ${s.auto?'checked':''} aria-label="Conteo automático por movimiento"></td>
+    <td data-l="Orden"><button class="small" data-act="up" title="Subir" ${i===0?'disabled':''}>↑</button></td>
+    <td data-l="Quitar"><button class="small" data-act="del" title="Eliminar estación" aria-label="Eliminar estación">✕</button></td>
+  </tr>`).join('')||'<tr><td colspan="15" class="muted" style="padding:14px 6px">Aún no hay estaciones. Toca Agregar estación para crear el primer paso de tu proceso.</td></tr>';
+  $('#quick').innerHTML=S.stations.map((s,i)=>`<button data-q="${s.id}" style="border-left-color:${COLORS[i%COLORS.length]}">${i+1}. ${esc(s.name)}<small>0 ciclos</small></button>`).join('')+`<button data-q="salida" style="border-left-color:var(--ink)">Salida<small>0 conteos</small></button>`;
+  renderZoneSel();update(true);
+}
+$('#tbody').addEventListener('input',e=>{
+  const tr=e.target.closest('tr');const s=S.stations.find(x=>x.id===tr.dataset.id);const k=e.target.dataset.k;if(!s||!k)return;
+  if(k==='name'){s.name=e.target.value;renderZoneSel()}
+  else if(k==='auto')s.auto=e.target.checked;
+  else s[k]=k==='ciclo'?(e.target.value===''?0:Math.max(0.1,num(e.target.value))):Math.max(1,Math.round(num(e.target.value)));
+  save();update(true);
+});
+$('#tbody').addEventListener('change',e=>{if(e.target.dataset.k==='auto'){const s=S.stations.find(x=>x.id===e.target.closest('tr').dataset.id);s.auto=e.target.checked;save()}});
+$('#tbody').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const tr=b.closest('tr');const i=S.stations.findIndex(x=>x.id===tr.dataset.id);const s=S.stations[i];
+  const a=b.dataset.act;
+  if(a==='plus'){addCount(s.id,mClock);update(true)}
+  else if(a==='use'){const c=measuredCycle(s);if(c){s.ciclo=Math.round(c*10)/10;save();renderTable();toast(`Ciclo de ${s.name}: ${fmt(s.ciclo,1)} s`)}else toast('Necesitas al menos 3 ciclos medidos')}
+  else if(a==='up'&&i>0){[S.stations[i-1],S.stations[i]]=[S.stations[i],S.stations[i-1]];save();renderTable()}
+  else if(a==='del'){if(confirm(`¿Eliminar ${s.name}?`)){S.stations.splice(i,1);save();renderTable()}}
+});
+$('#quick').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;addCount(b.dataset.q,mClock);if(measuring&&navigator.vibrate)navigator.vibrate(30);update(true)});
+$('#btnAdd').onclick=()=>{S.stations.push({id:uid(),name:`Estación ${S.stations.length+1}`,personas:1,ciclo:0,uds:1,zone:null,auto:false});save();renderTable();const ins=document.querySelectorAll('#tbody input[data-k="name"]');const last=ins[ins.length-1];if(last){last.focus();last.select()}};
+$('#btnUseAll').onclick=()=>{let n=0;S.stations.forEach(s=>{const c=measuredCycle(s);if(c){s.ciclo=Math.round(c*10)/10;n++}});save();renderTable();toast(n?`${n} tiempo(s) actualizado(s)`:'Aún no hay ciclos medidos suficientes')};
+
+/* ---------- cálculo y pantalla ---------- */
+let lastSug='';
+function update(force){
+  updateClock();
+  const done=[S.pedido>0&&!!S.fin,S.stations.length>0,S.stations.length>0&&S.stations.every(s=>s.ciclo>0),Object.keys(ME).length>0];
+  done.forEach((d,i)=>{const el=$('#st'+(i+1));if(el)el.classList.toggle('done',d)});
+  const sts=S.stations;const M=lineModel();const f=(S.rend||100)/100;
+  const hechas=S.hechas+outUnits();const rem=Math.max(0,S.pedido-hechas);
+  const ref=S.usarAhora?new Date():timeToday(S.ref);const fin=timeToday(S.fin);
+  const hAvail=(fin-ref)/3.6e6;
+  const reqRate=!S.fin?NaN:rem>0?(hAvail>0?rem/hAvail:Infinity):0;
+  const real=realRate();
+  const rate=real??M.th*f;
+
+  // andon
+  $('#kRate').textContent=fmt(rate);$('#kRateL').textContent=real!=null?'u/h reales (últimos 15 min)':`u/h estimadas (${fmt(S.rend)} % de rendimiento)`;
+  $('#kReq').textContent=reqRate===Infinity?'sin tiempo':fmt(reqRate);
+  $('#kAv').textContent=S.pedido>0?`${fmt(Math.min(100,hechas/S.pedido*100))} %`:'—';
+  $('#kAvL').textContent=`avance: ${fmt(hechas)} de ${fmt(S.pedido)}`;
+  if(M.b>=0){$('#kBot').textContent=sts[M.b].name;$('#kBotL').textContent=`cuello de botella, ${fmt(M.caps[M.b])} u/h`}else{$('#kBot').textContent='—';$('#kBotL').textContent='cuello de botella'}
+
+  let finish=null;
+  if(!S.pedido){$('#etaLabel').textContent='Ingresa las unidades del pedido';$('#eta').textContent='--:--';$('#etaSub').innerHTML=''}
+  else if(rem<=0){$('#etaLabel').textContent='Estado del pedido';$('#eta').textContent='Completo';$('#etaSub').innerHTML='<span class="ok">Se alcanzaron las unidades del pedido.</span>'}
+  else if(!(rate>0)){$('#etaLabel').textContent='Terminas el pedido a las';$('#eta').textContent='--:--';$('#etaSub').textContent='Completa personas y ciclos de cada estación para calcular.'}
+  else{
+    finish=new Date(ref.getTime()+rem/rate*3.6e6);
+    const days=Math.round((new Date(finish).setHours(0,0,0,0)-new Date(ref).setHours(0,0,0,0))/864e5);
+    $('#etaLabel').textContent=`Faltan ${fmt(rem)} uds. Terminas el pedido a las`;
+    $('#eta').textContent=hhmm(finish)+(days===1?' de mañana':days>1?` (+${days} días)`:'');
+    const margin=(fin-finish)/3.6e6;
+    $('#etaSub').innerHTML=!S.fin?'Pon la hora de fin del turno para saber si llegas.':margin>=0?`<span class="ok">Llegas con ${dur(margin)} de margen antes de las ${esc(S.fin)}.</span>`
+      :`<span class="bad">Te pasas ${dur(margin)} de las ${esc(S.fin)}. Al cierre quedarían unas ${fmt(Math.max(0,rem-rate*Math.max(0,hAvail)))} uds pendientes.</span>`;
+  }
+
+  // tabla viva
+  sts.forEach((s,i)=>{
+    const c=M.caps[i];const ut=M.th>0&&c>0?M.th/c:0;
+    const capEl=$('#cap-'+s.id);if(!capEl)return;
+    capEl.innerHTML=fmt(c)+(i===M.b?'<span class="tag">cuello</span>':'');
+    const u=$('#ut-'+s.id);u.style.width=`${Math.round(ut*100)}%`;u.className=i===M.b?'hot':'';u.title=`${fmt(ut*100)} %`;
+    const m=ME[s.id];
+    $('#mc-'+s.id).textContent=m?m.count:0;
+    $('#ma-'+s.id).textContent=m&&m.total>5?`${fmt(m.active/m.total*100)} %`:'—';
+    const mc=measuredCycle(s);$('#mm-'+s.id).textContent=mc?`${fmt(mc,1)} s`:'—';
+  });
+  document.querySelectorAll('#quick [data-q]').forEach(b=>{const m=ME[b.dataset.q];const n=m?m.count:0;b.querySelector('small').textContent=b.dataset.q==='salida'?`${n} conteos`:`${n} ciclos`});
+  const so=ME.salida;$('#salInfo').textContent=so?`${so.count} conteos, ${fmt(outUnits())} uds`:'';
+
+  // sugerencias
+  const html=suggestions(M,f,rem,reqRate,hAvail,ref,fin);
+  if(html!==lastSug||force){lastSug=html;$('#sug').innerHTML=html}
+  renderYama(M,reqRate);
+}
+
+let OPT=null;
+function suggestions(M,f,rem,reqRate,hAvail,ref,fin){
+  const sts=S.stations;const out=[];
+  if(!sts.length)return '<li>Agrega las estaciones de tu proceso para empezar.</li>';
+  const sinCiclo=sts.filter(s=>!(s.ciclo>0));
+  if(sinCiclo.length)return `<li class="warn">Falta el ciclo de: <b>${sinCiclo.map(s=>esc(s.name)).join(', ')}</b>. Mide con el cronómetro cuántos segundos tarda una persona en hacer esa tarea una vez, o usa la medición con video.</li>`;
+  const P=sts.reduce((a,s)=>a+s.personas,0);
+  const b=sts[M.b];
+  out.push({c:'warn',t:`El cuello de botella es <b>${esc(b.name)}</b> con ${fmt(M.caps[M.b])} u/h. Toda la línea avanza a ese ritmo, así que cualquier mejora debe empezar ahí.`});
+
+  OPT=optimize();
+  if(OPT){
+    const N=lineModel(OPT);
+    if(N.th>M.th*1.01){
+      const give=[],take=[];OPT.forEach((v,i)=>{const d=v-sts[i].personas;for(let k=0;k<-d;k++)give.push(i);for(let k=0;k<d;k++)take.push(i)});
+      const pairs={};give.forEach((g,k)=>{const key=g+'>'+take[k];pairs[key]=(pairs[key]||0)+1});
+      const txt=Object.entries(pairs).map(([k,n])=>{const [g,t]=k.split('>').map(Number);return `${n} persona${n>1?'s':''} de <b>${esc(sts[g].name)}</b> a <b>${esc(sts[t].name)}</b>`}).join('; ');
+      let eta='';if(rem>0&&N.th*f>0){const fd=new Date(ref.getTime()+rem/(N.th*f)*3.6e6);eta=` y terminarías a las ${hhmm(fd)}`}
+      out.push({c:'ok',t:`Reasigna ${txt}. La línea sube de ${fmt(M.th)} a ${fmt(N.th)} u/h (+${fmt((N.th/M.th-1)*100)} %)${eta}, con las mismas ${P} personas.`,btn:true});
+    }else out.push({c:'ok',t:`Con ${P} personas la distribución actual ya es la mejor posible. Para subir el ritmo hay que acortar el ciclo de <b>${esc(b.name)}</b> o sumar gente ahí.`});
+  }else if(P<sts.length)out.push({c:'bad',t:`Hay menos personas (${P}) que estaciones (${sts.length}). Alguien debe cubrir dos puestos; combina las estaciones de menor carga.`});
+
+  if(rem>0&&Number.isFinite(reqRate)&&reqRate>0){
+    const best=OPT?lineModel(OPT).th*f:M.th*f;
+    if(best<reqRate){
+      const need=personasPara(reqRate);
+      const extra=rem/best-hAvail;
+      out.push({c:'bad',t:`Para llegar a las ${esc(S.fin)} necesitas ${fmt(reqRate)} u/h. Con la mejor distribución te faltan ${fmt(reqRate-best)} u/h: necesitas ${need} personas en total (tienes ${P}) o cerca de ${dur(extra)} adicionales.`});
+    }
+  }else if(rem>0&&reqRate===Infinity)out.push({c:'bad',t:'La hora de fin ya pasó o es anterior a la hora de inicio. Revisa el turno.'});
+
+  sts.forEach((s,i)=>{
+    if(i===M.b)return;const ut=M.th/M.caps[i];
+    if(ut<0.6)out.push({c:'',t:`<b>${esc(s.name)}</b> trabaja al ${fmt(ut*100)} % de su capacidad. Le sobra tiempo: puede absorber tareas pequeñas del cuello de botella (preparar material, abastecer) sin cambiar de puesto.`});
+  });
+
+  sts.forEach((s,i)=>{
+    const m=ME[s.id];if(!m||m.total<60)return;
+    const idle=1-m.active/m.total;
+    if(s.zone&&idle>0.4&&i>M.b)out.push({c:'warn',t:`<b>${esc(s.name)}</b> está quieta el ${fmt(idle*100)} % del tiempo. Como está después del cuello de botella, probablemente espera material de ${esc(b.name)}.`});
+    if(s.zone&&idle>0.4&&i<M.b)out.push({c:'',t:`<b>${esc(s.name)}</b> está quieta el ${fmt(idle*100)} % del tiempo antes del cuello de botella. Revisa si le falta insumo o si puede adelantar material.`});
+    const mc=measuredCycle(s);
+    if(mc&&Math.abs(mc-s.ciclo)/s.ciclo>0.2)out.push({c:'warn',t:`En <b>${esc(s.name)}</b> el ciclo medido es ${fmt(mc,1)} s por persona y tienes cargado ${fmt(s.ciclo,1)} s. Pulsa Usar para que el cálculo refleje lo real.`});
+    const v=cv(m.ints);
+    if(v>0.35)out.push({c:'',t:`<b>${esc(s.name)}</b> tiene un ritmo irregular (variación ${fmt(v*100)} %). Observa a quien trabaja más parejo y estandariza su método, la ubicación del material y la altura de la mesa.`});
+  });
+  if(!Object.keys(ME).length)out.push({c:'',t:'Inicia la medición con el video para comparar los tiempos reales contra los que cargaste y detectar esperas.'});
+
+  return out.map(o=>`<li class="${o.c}">${o.t}${o.btn?'<br><button class="primary small" id="btnApply">Aplicar reasignación</button>':''}</li>`).join('');
+}
+$('#sug').addEventListener('click',e=>{
+  if(e.target.id!=='btnApply'||!OPT)return;
+  S.stations.forEach((s,i)=>s.personas=OPT[i]);save();renderTable();toast('Reasignación aplicada');
+});
+
+function renderYama(M,reqRate,el,light){
+  el=el||$('#yama');
+  const sts=S.stations;if(!sts.length){el.innerHTML='';return}
+  const opt=OPT||sts.map(s=>s.personas);
+  const val=(s,p)=>s.uds>0&&p>0?s.ciclo/(p*s.uds):0;
+  const cur=sts.map(s=>val(s,s.personas));const pro=sts.map((s,i)=>val(s,opt[i]));
+  const f=(S.rend||100)/100;
+  const takt=Number.isFinite(reqRate)&&reqRate>0?3600*f/reqRate:null;
+  const max=Math.max(...cur,...pro,takt||0)*1.18||1;
+  const Wv=640,Hv=270,L=46,R=12,T=14,B=58;const cw=(Wv-L-R)/sts.length;const bw=Math.min(56,cw*0.42);
+  const y=v=>T+(Hv-T-B)*(1-v/max);
+  const cs=getComputedStyle(document.documentElement);
+  let ink=cs.getPropertyValue('--ink').trim(),muted=cs.getPropertyValue('--muted').trim(),line=cs.getPropertyValue('--line').trim(),ok=cs.getPropertyValue('--ok').trim(),bad=cs.getPropertyValue('--bad').trim();
+  if(light){ink='#1F1F1F';muted='#5E625F';line='#D3D5D1';ok='#2E7D4F';bad='#C2361C'}
+  let g='';
+  for(let k=0;k<=4;k++){const v=max*k/4;g+=`<line x1="${L}" x2="${Wv-R}" y1="${y(v)}" y2="${y(v)}" stroke="${line}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="${muted}">${fmt(v,v<10?1:0)}</text>`}
+  sts.forEach((s,i)=>{
+    const cx=L+cw*i+cw/2;const over=takt&&cur[i]>takt;
+    g+=`<rect x="${cx-bw-2}" y="${y(cur[i])}" width="${bw}" height="${Math.max(0,y(0)-y(cur[i]))}" fill="${over?bad:ok}" rx="2"><title>${esc(s.name)}: ${fmt(cur[i],2)} s/u</title></rect>`;
+    g+=`<rect x="${cx+2}" y="${y(pro[i])}" width="${bw}" height="${Math.max(0,y(0)-y(pro[i]))}" fill="none" stroke="${ink}" stroke-dasharray="4 3" stroke-width="1.5"><title>Con reasignación: ${fmt(pro[i],2)} s/u</title></rect>`;
+    const name=s.name.length>16?s.name.slice(0,15)+'…':s.name;
+    g+=`<text x="${cx}" y="${Hv-B+16}" text-anchor="middle" font-size="12" fill="${ink}">${i+1}. ${esc(name)}</text>`;
+    g+=`<text x="${cx}" y="${Hv-B+32}" text-anchor="middle" font-size="11" fill="${muted}">${s.personas} → ${opt[i]} pers.</text>`;
+  });
+  if(takt){g+=`<line x1="${L}" x2="${Wv-R}" y1="${y(takt)}" y2="${y(takt)}" stroke="#EE7623" stroke-width="2.5" stroke-dasharray="8 4"/><text x="${Wv-R}" y="${y(takt)-6}" text-anchor="end" font-size="12" font-weight="600" fill="#EE7623">Takt ${fmt(takt,2)} s/u</text>`}
+  g+=`<text x="12" y="${T+(Hv-T-B)/2}" font-size="11" fill="${muted}" transform="rotate(-90 12 ${T+(Hv-T-B)/2})" text-anchor="middle">s por unidad</text>`;
+  el.innerHTML=`<svg viewBox="0 0 ${Wv} ${Hv}" role="img" aria-label="Carga por estación frente al takt" font-family="Barlow, Arial, sans-serif">${g}</svg>`;
+}
+
+/* ---------- informe ---------- */
+function strip(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent.replace(/\s+/g,' ').trim()}
+function sugList(){return [...document.querySelectorAll('#sug li')].map(li=>{const c=li.cloneNode(true);c.querySelectorAll('button,br').forEach(b=>b.remove());return c.innerHTML.trim()}).filter(Boolean)}
+function buildReport(){
+  update(true);
+  const sts=S.stations;const M=lineModel();const f=(S.rend||100)/100;
+  const hechas=S.hechas+outUnits();const rem=Math.max(0,S.pedido-hechas);
+  const ref=S.usarAhora?new Date():timeToday(S.ref);const fin=timeToday(S.fin);
+  const hAvail=(fin-ref)/3.6e6;
+  const reqRate=!S.fin?NaN:rem>0?(hAvail>0?rem/hAvail:Infinity):0;
+  const real=realRate();const rate=real??M.th*f;
+  const now=new Date();
+  const fecha=now.toLocaleDateString('es-EC',{day:'2-digit',month:'long',year:'numeric'});
+  const opt=OPT;
+  const k=(l,v)=>`<div><span>${l}</span><b>${v}</b></div>`;
+  const rows=sts.map((s,i)=>{const m=ME[s.id];const mc=measuredCycle(s);const ut=M.th>0&&M.caps[i]>0?M.th/M.caps[i]*100:0;
+    return `<tr${i===M.b?' class="hot"':''}><td>${i+1}</td><td>${esc(s.name)}${i===M.b?' <b>(cuello de botella)</b>':''}</td><td class="n">${s.personas}</td><td class="n">${s.ciclo>0?fmt(s.ciclo,1):'—'}</td><td class="n">${s.uds}</td><td class="n">${fmt(M.caps[i])}</td><td class="n">${fmt(ut)} %</td><td class="n">${m?m.count:'—'}</td><td class="n">${m&&m.total>5?fmt(m.active/m.total*100)+' %':'—'}</td><td class="n">${mc?fmt(mc,1):'—'}</td><td class="n">${opt?opt[i]:'—'}</td></tr>`}).join('');
+  const sug=sugList();
+  $('#report').innerHTML=`
+  <div class="r-head"><div class="r-mark"></div><div><div class="r-org">Estibas y Servicios Integrales – Grupo Torres &amp; Torres</div><h1>Informe de ritmo de línea</h1></div></div>
+  <table class="r-meta"><tbody>
+    <tr><td>Línea o maquila</td><td>${esc(S.linea||'—')}</td><td>Fecha</td><td>${fecha}, ${hhmm(now)}</td></tr>
+    <tr><td>Responsable</td><td>${esc(S.resp||'—')}</td><td>Tiempo medido</td><td>${$('#clock').textContent}</td></tr>
+  </tbody></table>
+  <h2>Resumen</h2>
+  <div class="r-kpis">
+    ${k('Pedido',fmt(S.pedido)+' u')}${k('Hechas',fmt(hechas)+' u')}${k('Faltan',fmt(rem)+' u')}
+    ${k(real!=null?'Ritmo real':'Ritmo estimado',fmt(rate)+' u/h')}${k('Ritmo necesario',reqRate===Infinity?'sin tiempo':Number.isFinite(reqRate)?fmt(reqRate)+' u/h':'—')}${k('Cuello de botella',M.b>=0?esc(sts[M.b].name):'—')}
+  </div>
+  <p class="r-eta"><b>${esc($('#etaLabel').textContent)} ${esc($('#eta').textContent)}.</b> ${esc($('#etaSub').textContent)}</p>
+  <h2>Estaciones del proceso</h2>
+  <div class="r-tabwrap"><table class="r-tab"><thead><tr><th>#</th><th>Estación</th><th>Personas</th><th>Ciclo (s/persona)</th><th>Uds por ciclo</th><th>Capacidad (u/h)</th><th>Utilización</th><th>Ciclos medidos</th><th>Actividad</th><th>Ciclo medido (s)</th><th>Personas sugeridas</th></tr></thead>
+  <tbody>${rows||'<tr><td colspan="11">Sin estaciones registradas</td></tr>'}</tbody></table></div>
+  <h2>Carga por estación frente al ritmo necesario</h2>
+  <div class="r-chart" id="rChart"></div>
+  <h2>Hallazgos y sugerencias</h2>
+  <ol class="r-sug">${sug.map(t=>`<li>${t}</li>`).join('')||'<li>Sin datos suficientes.</li>'}</ol>
+  <h2>Observaciones de campo</h2>
+  <div class="r-obs" contenteditable="true" data-ph="Toca aquí y escribe tus observaciones antes de guardar el PDF."></div>
+  <p class="r-note">Informe referencial. Los tiempos dependen de la calidad del conteo y la medición; validar con el responsable del área antes de tomar decisiones de personal. El video se procesó en el equipo y no se almacenó.</p>
+  <div class="r-sign"><div>Elaborado por<br><br><br>____________________<br>${esc(S.resp||'')}</div><div>Revisado por<br><br><br>____________________<br>&nbsp;</div></div>`;
+  renderYama(M,reqRate,$('#rChart'),true);
+}
+$('#btnReport').onclick=()=>{buildReport();const w=$('#repWrap');w.classList.remove('hidden');w.scrollTop=0;document.body.style.overflow='hidden'};
+$('#repClose').onclick=()=>{$('#repWrap').classList.add('hidden');document.body.style.overflow=''};
+$('#repPrint').onclick=()=>{try{window.print()}catch(e){toast('No se pudo abrir la impresión aquí. Abre la app desde GitHub Pages.')}};
+$('#repShare').onclick=async()=>{
+  const txt=[`Ritmo de línea: ${S.linea||'maquila'} (${new Date().toLocaleDateString('es-EC')})`,`${$('#etaLabel').textContent} ${$('#eta').textContent}.`,$('#etaSub').textContent,`Ritmo: ${$('#kRate').textContent} ${$('#kRateL').textContent}`,`Necesario: ${$('#kReq').textContent} u/h`,`Cuello de botella: ${$('#kBot').textContent}`,'','Sugerencias:',...sugList().map((s,i)=>`${i+1}. ${strip(s)}`)].join('\n');
+  try{if(navigator.share){await navigator.share({title:'Informe de ritmo de línea',text:txt});return}}catch(e){if(e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(txt);toast('Resumen copiado. Pégalo en WhatsApp o en un correo.')}catch(e){toast('No se pudo compartir desde aquí.')}
+};
+
+bindForm();renderTable();
+setInterval(()=>update(false),500);
+})();
+</script>
+</body>
+</html>
